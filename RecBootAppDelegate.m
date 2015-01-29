@@ -48,7 +48,7 @@ void recovery_disconnect_callback(struct am_recovery_device *rdev) {
 	
 	NSString *foundValue = [deviceDetails stringValue];
 	
-	if ([foundValue isEqualToString:@"Recovery Device Connected"]) {
+	if ([foundValue isEqualToString:@"Recovery device connected"]) {
 		
 		[exitRecBut setEnabled:YES];
 	
@@ -56,7 +56,6 @@ void recovery_disconnect_callback(struct am_recovery_device *rdev) {
 		[exitRecBut setEnabled:NO];
 	}
 
-	
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
@@ -109,16 +108,27 @@ void recovery_disconnect_callback(struct am_recovery_device *rdev) {
 }
 
 - (void)recoveryCallback {
-	[deviceDetails setStringValue:@"Recovery Device Connected"];
+	[deviceDetails setStringValue:@"Recovery device connected"];
 	[exitRecBut setEnabled:YES];
 	[loadingInd setHidden:YES];
 }
 
+- (IBAction)Reboot:(id)pId {
+    [classPointer rebootDevice];
+    //[classPointer dePopulateData];
+    //[classPointer loadingProgress];
+}
+
+- (void)rebootDevice {
+    //AMDeviceConnect(device);
+}
+
 - (void)populateData {
 	NSString *serialNumber = [self getDeviceValue:@"SerialNumber"];
+    NSString *productType = [self getDeviceValue:@"ProductType"];
 	NSString *modelNumber = [self getDeviceValue:@"ModelNumber"];
-	NSString *deviceString = [self getDeviceValue:@"ProductType"];
 	NSString *firmwareVersion = [self getDeviceValue:@"ProductVersion"];
+	NSString *deviceString = [self getDeviceValue:@"ProductType"];
 	
 	if ([deviceString isEqualToString:@"iPod1,1"]) {
 		deviceString = @"iPod Touch 1G";
@@ -137,15 +147,16 @@ void recovery_disconnect_callback(struct am_recovery_device *rdev) {
 	} else if ([deviceString isEqualToString:@"iPad1,1"]) {
 		deviceString = @"iPad 1G";
 	} else {
-		deviceString = @"Unknown";
+		//deviceString = @"Unknown";
 	}
 	
-	if (deviceString == @"Unknown") {
-		NSString *completeString = [NSString stringWithFormat:@"%@ Mode/Device Detected",deviceString];
+	//if (deviceString == @"Unknown") {
+    if ([deviceString isEqualToString: @"Unknown"]) {
+		NSString *completeString = [NSString stringWithFormat:@"%@ Mode/Device detected",deviceString];
 		[deviceDetails setStringValue:completeString];
 	} else {
 		[loadingInd setHidden:YES];
-		NSString *completeString = [NSString stringWithFormat:@"%@ Connected, %@, %@, %@", deviceString, modelNumber, firmwareVersion, serialNumber];
+		NSString *completeString = [NSString stringWithFormat:@"%@ (%@), %@, %@, %@", deviceString, productType, modelNumber, firmwareVersion, serialNumber];
 		[deviceDetails setStringValue:completeString];
 	}
 	
@@ -163,6 +174,7 @@ void recovery_disconnect_callback(struct am_recovery_device *rdev) {
 
 - (NSString *)getDeviceValue:(NSString *)value {
 	return AMDeviceCopyValue(device, 0, value);
+    //return (NSString *)AMDeviceCopyValue(device, 0, value);
 }
 
 @end

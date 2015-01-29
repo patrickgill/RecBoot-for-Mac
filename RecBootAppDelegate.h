@@ -15,17 +15,19 @@
 	IBOutlet NSProgressIndicator *loadingInd;
 	
 	IBOutlet NSTextField *deviceDetails;
-	
 }
 
 - (IBAction)exitRec:(id)pId;
 - (IBAction)enterRec:(id)pId;
+- (IBAction)Reboot:(id)pId;
 
 - (void)populateData;
 - (void)dePopulateData;
 - (void)recoveryCallback;
 - (void)loadingProgress;
 - (void)enterRecovery;
+- (void)rebootDevice;
+
 - (NSString *)getDeviceValue:(NSString *)value;
 
 @property (assign) IBOutlet NSWindow *window;
